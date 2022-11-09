@@ -1,14 +1,18 @@
 import { useState } from 'react'
 
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
 import NavBar from './components/NavBar/NavBar'
 import Titulo from './components/Titulo/Titulo'
 import Form from './components/Form/Form'
 import { Section } from './components/Section/Section'
 import ItemListContainer from './components/ItemListContainer/ItemListContainer'
 import reactLogo from './assets/react.svg'
+import Cart from './pages/ItemDetailContainer/Cart'
 
 //import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import ItemDetailContainer from './pages/ItemDetailContainer/ItemDetailContainer'
+import NotFound from './components/NotFound/NotFound'
 
 /* Un componente es una funcion que empieza con mayuscula y retorna un jsx */
 /* Las props son parametros o propiedades de un objeto o arreglo, props es un objeto con titulo y subtitulo, una forma de pasar informacion*/
@@ -35,6 +39,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 /* 3 clasificaciones del estado en el ciclo de vida: El montaje (primera vez que un componente se genera), La actualizacion (cuando se actualiza el componente), Desmontaje (Se elimina componente del DOM) */
 /* JS promise .isFulfilled .isPending .isRejected es un api (funcion) de js para crear y ejecutar operaciones */
 /* Una promesa es asincronica o sincronico depende de la tarea a realizar  y es un objeto que permite representar y seguir el ciclo de vida de una tarea/operacion (funcion) */
+/* Las HTTP/S son protocolos de transferencias, la diferecnicon HTTP y HTTPS es la segunda es mas segura */
+/* Request via HTTP/S sirven para realizar una solicut a un servidor, definido por URL, Verbo(get:obtener, post:crear, put:actualizar, patch:alterar delete:borrar), parametros: query(parametros para efectuar una busqueda) o url, Body(contenido del post) */
+/* Recursos restful Cuando se crea y provee un servicio basado en terminos de recursos respetando convenciones de verbo/metodo hablamos de un diseño arquitectural de tipo  REST, si ademas transferimos javascript o xml  se conoce como  AJAX */
+/* Los Headers se usan para definir respuestas soportadas,  requeridas o preferidas, agregar informacion extra, Auth token, cookies,leguaje preferido, lo que quieras en forma de texto  */
+/* npm i react-router-dom es un mecanismo integrado de navegacion */
 
 function App() {
 /*   let tituloApp = 'Hola soy titulo de app'
@@ -52,12 +61,28 @@ function App() {
   }
 
 return (
-    <div>
-    
-        <NavBar />
-       {/*  <Form tituloForm= {tituloForm}/> */}
 
-        <ItemListContainer greeting={saludo} saludar = {saludar} />
+  //BrowserRouter me da el contexto para poder usar todas las funciones de la libreria react-router-dom
+  //En todos los componentes voy a necesitar usar react-router-dom
+  //Routes me va a permitir asociar componentes  con rutas
+    <BrowserRouter>
+    {/* saco el navbar porque es el unico componente que no va a tener una ruta */}
+      <NavBar />
+    <Routes>
+      {/* Al usar detail/:productId le estoy diciendo que productId es un parametro */}
+       {/*  <Form tituloForm= {tituloForm}/> */}
+      <Route to path='/' element={<ItemListContainer greeting={saludo} saludar = {saludar} />} />
+      <Route to path='/categoria/:categoriaId' element={<ItemListContainer greeting={saludo} saludar = {saludar} />} />
+      <Route to path='/detail/:productId' element= {<ItemDetailContainer />}/>
+      <Route to path='/cart' element= {<Cart />}/>
+
+      {/*  * significa todos  */}
+      {/* <Route path='*' element={<Navigate to='/'/>}/> */}
+      <Route path='*' element={<NotFound/>}/>
+        
+       
+       
+      
 
          {/*    <Titulo /> 
                 <Titulo /> 
@@ -65,8 +90,8 @@ return (
 
        {/*  <Section />
         <Titulo titulo='titulo de App' subtitulo='subtitulo de App'/> */}
-
-   </div>
+    </Routes>
+   </BrowserRouter>
 )
 
 }

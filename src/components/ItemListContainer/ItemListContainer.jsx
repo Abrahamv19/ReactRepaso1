@@ -2,6 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { gFetch } from '../../utilis/gFetch'
+import {Link, useParams} from 'react-router-dom'
 
 // se renderiza un componente, cuando hay, cambio de estado, cambio en las props o un evento
 // A una simulacion se le conoce como mock
@@ -15,7 +16,10 @@ import { gFetch } from '../../utilis/gFetch'
 //Las funciones  callback añadidas con .then seran llamads despues del exito ofracaso de la operacion
 //El metodo map nos permite generar un nuevo array tomando de base otro array y utilizando una funcion transformadora, me sirve para hacer un render de una coleccion de objetos en react
 //El map tiene un retorno a diferencia del for each
-
+//Las cors (intercambio de recursos de origen cruzado) es una caraterisitica de seguridad del navegador que restringe solicitudes HTTP de origen cruzado (error/problema). El error se genera por el envio de de un request option llamado pre-flight (antes de mi cosntulta(fetch)), en dicho request se le pregunta al dominio si acepta el request de un dominio distinto (cross), si no esta configurado para aceptar se envia un error. Estos headers se activan ante un verbo OPTION, por comodidad se pueden activar para otros verbos
+//Los mejores servicios ofrecen integraciones mediante Api rest usando https.
+//Las Apis agregan funcionalidades a mi aplicacion (clima, mercado pago, convertidor de monedas, hora, etc.. )
+// Las Apis me las traigo con Fetch o Axios
 
 /* let obj = [{nombre: 'Hugo',apellido: 'Vasquez' }]
 
@@ -42,19 +46,48 @@ const ItemListContainer = (obj) => {
 
   const [products, setProducts] = useState([])
   const [loading, setLoading]= useState(true)
-/*   const [bool, setBool]= useState(true) */
-
+  const [bool, setBool]= useState(true)
+  const {categoriaId} = useParams() 
   //Esto es una tarea asincronica por lo que la debo asociar a un useEffect y [] para que se ejecute solo una vez porque hay una llamada a una api. Con el useEffect me llama gFetch una soloa vez despues del return, es decir, despues que se monto el componente
 
+/* const option = {
+    method: 'GET',
+    headers: {
+        'Content Type': 'application/json'
+    } */
+    //con este codigo convierto un objeto js a un json
+/*     body: JSON.stringify([]) 
+}  */
+
+  //Como usar un fecth
+//fetch(url, option)
+
+//verr video clase 4 T4:03
+/* const url = 'https://pokeapi.co/api/v2/ability/?limit=10&offset=20'
+fetch(url) */
+//fetch es una promesa capturo el resultado con un .then. Usando resp.json le estoy diciendo que me transorme la promesa a un objeto js
+/* .then(resp => resp.json())
+.then(data => console.log(data)) */
+
+
+
   useEffect(() => {
-  gFetch(1)
-  .then(resp => setProducts(resp))
-  .catch(err => console.log(err))
-  .finally(() => setLoading(false))
-  /* .finally(() => console.log('Siempre')) */
-  }, [])
+    if (categoriaId) {
+        gFetch()
+        .then(resp => setProducts(resp.filter(prod => prod.description === categoriaId)))
+        .catch(err => console.log(err))
+        .finally(() => setLoading(false))
+    }else{
+    gFetch()
+      .then(resp => setProducts(resp))
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false))
+      
+    }
+  
+  }, [categoriaId])
 
-
+//puedo agregar .finally(() => console.log('Siempre')) despues de .finally(() => setLoading(false)) para confirmar que esta funcionando el gFetch
     /* throw new Error('Error en esta linea') */
     /* console.log(resp) */
    /*  return resp * 20  */
@@ -68,11 +101,12 @@ const ItemListContainer = (obj) => {
   //En este caso no tendria que poner el return porque () => es una funcion callback y el retorno esta implicito
   /* .then(respuesta => console.log(respuesta)) */
 
- /*  const cambiarEstado = () => {
+/*   const cambiarEstado = () => {
     setBool(!bool)
     
   } */
-  console.log(products);
+ /*  console.log(products); */
+  console.log(categoriaId)
 
   //podria tener un header en el primer div, un body en el segundo div, y asi...
   return (
@@ -85,7 +119,8 @@ const ItemListContainer = (obj) => {
              {/*  <button onClick={cambiarEstado}>cambiar estado</button> */}
                  
                   {products.map( obj => <div key={obj.id} className='card w-50 mt-4'>
-                          <div className='card-header'>
+                          <Link to={`/detail/${obj.id}`}>
+                                <div className='card-header'>
                           nombre: {obj.name}
                           </div>
                           <div className='card-body'>
@@ -96,6 +131,8 @@ const ItemListContainer = (obj) => {
                           <div className='card-footer'>
                           descripcion: {obj.description}
                           </div>
+                          </Link>
+                    
                   
                     </div>
                 
