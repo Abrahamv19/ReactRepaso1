@@ -2,7 +2,8 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { gFetch } from '../../utilis/gFetch'
-import {Link, useParams} from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import ItemList from '../ItemList'
 
 // se renderiza un componente, cuando hay, cambio de estado, cambio en las props o un evento
 // A una simulacion se le conoce como mock
@@ -118,26 +119,7 @@ fetch(url) */
               <h1>ItemListContainer</h1>
              {/*  <button onClick={cambiarEstado}>cambiar estado</button> */}
                  
-                  {products.map( obj => <div key={obj.id} className='card w-50 mt-4'>
-                          <Link to={`/detail/${obj.id}`}>
-                                <div className='card-header'>
-                          nombre: {obj.name}
-                          </div>
-                          <div className='card-body'>
-                            <center>
-                            <img src={obj.img} className='w-50'/>
-                            </center>
-                          </div>
-                          <div className='card-footer'>
-                          descripcion: {obj.description}
-                          </div>
-                          </Link>
-                    
-                  
-                    </div>
-                
-                )
-                } 
+                  <ItemList products={products}/>
             </center>
             </div>
   )
